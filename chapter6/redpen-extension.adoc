@@ -1,0 +1,74 @@
+== RedPen に JavaScript で機能追加
+
+伊藤です。いままでも http://redpen.cc[RedPen] の機能はJavaで実装できたのですが、コンパイルが必要で気軽に機能を実装できませんでした。そこでv1.3からJavaScriptでの機能追加をサポートしました。JavaScript ベースの機能追加ではコンパイル作業は必要ありません。
+
+本稿では前半で機能拡張で実装するメソッド群（あまり使わないのも含めて）の解説を行います。後半では解説したメソッドをもとに機能を追加してみます。
+
+[[sec-methods]]
+=== 実装するメソッド
+
+http://redpen.cc[RedPen] で機能拡張を作成するときに利用（実装）するメソッドは二種類（<<sec-validate-method>> と <<sec-prevalidate-method>>）に大別されます。
+
+[[sec-validate-method]]
+=== validate メソッド
+
+<<sec-validate-method>>は二種類存在します。それぞれ引数によって名前が異なります（<<sec-validatesentence-method>>と<<sec-validatesection-method>>）。どちらのメソッドも入力（文か節）内を検査して、エラーを追加します。
+
+http://redpen.cc[RedPen] は文書内の文（もしくは節）のすべてを引数にして<<sec-validate-method>>を呼び出します。エラーの追加はaddErrorメソッドを利用します。
+
+[[sec-validatesentence-method]]
+==== validateSentence メソッド
+
+validateSentenceは引数に文（Sentence）を持ちます。
+
+[[sec-validatesection-method]]
+==== validateSection メソッド
+
+validateSectionは引数に節（Section）をとります。文より大きな規模のチェックを行いたいときに使用します。例えば、著しく類似した節を検知する機能（DuplicatedSection）は節単位のvalidate メソッドを利用して実装されます。
+
+[[sec-prevalidate-method]]
+=== preValidate メソッド
+
+preValidateメソッドは<<sec-validate-method>>の前処理を行います。具体的には<<sec-validate-method>>が呼び出される前に、全ての文に対して<<sec-prevalidate-method>>は適用されます。<<sec-validate-method>>と同様に <<sec-prevalidate-method>>も引数によって二種類存在します（<<sec-prevalidatesentence-method>> と <<sec-prevalidatesection-method>>）。
+
+[[sec-prevalidatesentence-method, preValidateSentence メソッド]]
+ * preValidateSenence （文を引数にとる preValidate メソッドです）
+
+[[sec-prevalidatesection-method, preValidateSection メソッド]]
+ * preValidateSection （節を引数にとる preValidate メソッドです）
+
+現状<<sec-prevalidate-method>>が必要だった機能はそれほど多くありません。RedPenが提供している機能で<<sec-prevalidate-method>>を利用している数少ない機能にJapaneseStyleがあります（Java ですが）。JapaneseStyle はですます調とである調が混在していないかを検査する機能です。JapaneseStyleの実装では<<sec-prevalidate-method>>を利用して、ですます調とである調で書かれた文の出現回数をカウントしています。<<sec-validate-method>>では出現回数の少なかったほうの調を利用した文が発見されるとエラーを出力するのです。
+
+次節では<<sec-validatesentence-method>>と<<sec-prevalidatesentence-method>>を利用した機能を作成してみます。
+
+
+=== NotTooKanji（漢字が多すぎる） 機能
+
+昔文書を書いていたところある共同執筆者の方から「君の文は漢字が多すぎる」という注意を受けたことがあります。理由は漢字が多いと読みにくいというものでした。「漢字を多用しすぎないように」という規約は比較的一般的です。実際にグーグルで “漢字を多用しない” と検索してみると、いくつもの記事がヒットします。
+
+今回開発する NotTooKanji 機能は文書内で使用されている漢字の割合がしきい値以上の時に、エラーを出力します。<<sec-prevalidatesentence-method>>では文中ので使用された漢字と、すべての文字をカウントしています。<<sec-validatesentence-method>>で漢字の割合が 50% 以上の時にエラーを出力する処理を行っています。
+エラーの追加には addError メソッドを利用します（引数にはエラーメッセージと、エラーが存在する文）。またNotTooKanjiではflushedというフラグを利用してエラーを一度のみ出力しています。
+
+include::lists/list-1.adoc[]
+
+=== 利用してみる
+
+以下のようにJavaScript 機能を設定に追加します。
+
+include::lists/list-2.adoc[]
+
+次に<<source-nottookanji-js>>を ``NotTooKanji.js`` という名前で http://redpen.cc[RedPen] のホームディレクトリ直下の ``js`` 以下に保存します。入力文書として以下の文を “too-much-kanji.txt” というファイル名で保存します（少々人工的な例で恐縮です）。
+
+include::lists/list-3.adoc[]
+
+では実行してみます。
+
+include::lists/list-4.adoc[]
+
+期待どおりにエラーが出力されました。
+
+
+=== まとめ
+
+本記事ではJavaScriptでRedPenの機能拡張を作るときに<<sec-methods,利用するメソッド>>の解説をしました。その後実際に<<sec-methods,メソッド>>を利用して機能を追加してみました。
+

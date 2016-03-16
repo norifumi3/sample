@@ -1,0 +1,25 @@
+[[source-nottookanji-js, リスト1]]
+[source, java_script, title="リスト1. NotTooKanji.js"]
+----
+var THRESHOLD = 0.5
+var kanji_count = 0
+var moji_count = 0
+var flushed = false
+
+function preValidateSentence(sentence) {
+    var content = sentence.getContent();
+    for (var i = 0; i <= content.length - 1; i++) {
+        if(/^[\u4e00-\u9faf]+$/.test(content[i])) {
+            kanji_count++
+        }
+        moji_count++
+    }
+}
+
+function validateSentence(sentence) {
+    if ((parseFloat(kanji_count) / moji_count) > THRESHOLD && flushed == false) {
+        addError("文書内に漢字多すぎ。。。＞＜", sentence);
+        flushed = true
+    }
+}
+----

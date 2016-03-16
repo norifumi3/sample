@@ -1,0 +1,5 @@
+= 議事録
+:front-cover-image: cover.png
+
+include::gijiroku.adoc[]
+include::gijiroku2.adoc[]

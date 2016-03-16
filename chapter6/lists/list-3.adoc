@@ -1,0 +1,4 @@
+[source, text, title="too-much-kanji.txt"]
+----
+貴方の文書で漢字が多過ぎる点、気を付け給え。
+----

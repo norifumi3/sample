@@ -1,0 +1,9 @@
+[[source-redpen-conf-xml, リスト2]]
+[source, xml, title="リスト2. redpen-conf.xml"]
+----
+<redpen-conf lang="ja">
+   <validators>
+        <validator name="JavaScript" />
+   </validators>
+</redpen-conf>
+----

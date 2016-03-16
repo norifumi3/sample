@@ -1,0 +1,6 @@
+[title="リスト4. 実行結果"]
+----
+$bin/redpen -c conf/redpen-conf-ja.xml too-much-kanji.txt
+...
+too-much-kanji.txt:1: ValidationError[JavaScript], [NotTooKanji.js] 文書内に漢字多すぎ。。。＞＜ at line: 貴方の文書で漢字が多過ぎる点、気を付け給え。
+----

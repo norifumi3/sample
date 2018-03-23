@@ -57,10 +57,10 @@ heading:
   font_style: bold
   h1_font:
     size: $heading_h2_font_size
-    color: $heading_h2_color
+    color: ffffff
   h2_font:
     size: floor($base_font_size * 2.15)
-    color: black
+    color: ffffff
   h3_font:
     size: floor($base_font_size * 1.75)
     color: 465158
